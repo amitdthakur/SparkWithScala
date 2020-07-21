@@ -11,8 +11,8 @@ object WordCountBetterSorted {
       .appName("WordCountBetterSorted")
       .getOrCreate()
     val dataFrameReader = sparkSession.read
-      .textFile("../files/book.txt")
-    
+      .textFile("src/main/resources/book.txt")
+
     val flatten = dataFrameReader.rdd.flatMap(x => x.split("\\W+"))
     val lowerCaseRdd = flatten.map(x => x.toLowerCase())
     val reduced = lowerCaseRdd.map(x => (x, 1)).reduceByKey((x, y) => x + y)

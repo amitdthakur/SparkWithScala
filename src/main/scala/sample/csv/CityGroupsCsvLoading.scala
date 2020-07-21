@@ -14,7 +14,7 @@ object CityGroupsCsvLoading {
     val fileDataFrame = sparkSession.read
       .option("inferSchema", "true")
       .option("header", "true")
-      .csv("../files/csv/CitiGroup2006_2008.csv")
+      .csv("src/main/resources/CitiGroup2006_2008.csv")
 
     val yearColumn = fileDataFrame
       .withColumn("Year", year(fileDataFrame("Date")))
