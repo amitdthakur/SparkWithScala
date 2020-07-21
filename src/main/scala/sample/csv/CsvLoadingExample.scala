@@ -14,7 +14,7 @@ object CsvLoading {
       .option("header", "true")
       .option("inferSchema", "true")
       .format("csv")
-      .load("../files/clean_usa_housing.csv")
+      .load("src/main/resources/clean_usa_housing.csv")
     import sparkSession.implicits._
     dataFrameReader.agg(max($"Price")).show()
   }
