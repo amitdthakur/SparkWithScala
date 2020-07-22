@@ -25,33 +25,37 @@ object DBConnection {
       .option("driver", "oracle.jdbc.driver.OracleDriver")
       .load()
     import sparkSession.implicits._
+    //Filtering based on age <28
+    val filteredDataFrameBasedOnAge = tableDataFrame.where('Age.lt(28))
+    //Converting Gender column from M to Male F to Female
+    val genderColumnDataSet = filteredDataFrameBasedOnAge.withColumn(
+      "Gender",
+      when('Gender.equalTo("M"), "Male")
+        .when('Gender.equalTo("F"), "Female")
+        .otherwise("NotSpecified") as 'Gender
+    )
 
     /**
       *
-      * Select
-      * Id,
-      * Upper(Name) as Name,
-      * Age,
-      * Case Gender
-      * When 'M' Then
+      * SELECT
+      * ID,
+      * UPPER(NAME)     AS NAME,
+      * age,
+      * CASE gender
+      * WHEN 'M'  THEN
       * 'Male'
-      * Else
+      * WHEN 'F'  THEN
       * 'Female'
-      * End As Gender
-      * From
-      * Students;
-      * Above Query equivalent logic
+      * ELSE
+      * 'NotSpecified'
+      * END             AS gender
+      * FROM
+      * students
+      * where age<28;
       *
       */
     val selectedColumnDataFrame =
-      tableDataFrame.select(
-        $"ID",
-        upper(tableDataFrame("NAME")) as "NAME",
-        $"AGE",
-        when(tableDataFrame("GENDER") === "M", "Male")
-          .when(tableDataFrame("GENDER") === "F", "Female")
-          .otherwise("NotSpecified") as "Gender"
-      )
+      genderColumnDataSet.select('Id, upper('Name) as 'NAME, 'Age, 'Gender)
     //Printing top 20 rows
     selectedColumnDataFrame.show()
   }
