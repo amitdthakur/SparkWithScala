@@ -3,14 +3,22 @@ package sample.sqlex
 import org.apache.spark.sql.SparkSession
 import org.apache.spark.sql.functions._
 //case class for mapping
-case class CsvRow(Date: String,
-                  Open: Double,
-                  High: Double,
-                  Low: Double,
-                  Close: Double,
-                  Volume: Integer)
+private case class CsvRow(Date: String,
+                          Open: Double,
+                          High: Double,
+                          Low: Double,
+                          Close: Double,
+                          Volume: Integer)
 
 object SparkSqlExample {
+
+  private def createSparkSession: SparkSession = {
+    SparkSession
+      .builder()
+      .master("local[*]")
+      .appName("SparkSqlExample")
+      .getOrCreate()
+  }
 
   /**This function will increment the high column value by 1.
     *
@@ -23,11 +31,7 @@ object SparkSqlExample {
 
   def main(args: Array[String]): Unit = {
     //Creating spark session object.
-    val sparkSession = SparkSession
-      .builder()
-      .appName("SparkSqlExample")
-      .master("local[*]")
-      .getOrCreate()
+    val sparkSession = createSparkSession
     // For implicit conversions like converting RDDs to DataFrames
     import sparkSession.implicits._
     val fileDataFrame = sparkSession.read
@@ -35,14 +39,14 @@ object SparkSqlExample {
       .option("header", "true")
       .csv("src/main/resources/CitiGroup2006_2008.csv")
     //Printing rows from the csv
-    fileDataFrame.select($"close", $"close" + 1 as ("CloseIncremented")).show()
+    fileDataFrame.select($"close", $"close" + 1 as "CloseIncremented").show()
     //Filtering data
     //fileDataFrame.filter($"close" >= 489.9).show()
     //Group by
     //fileDataFrame.groupBy("close").count().show()
     //Register data frame as table.
     fileDataFrame.createOrReplaceTempView("employee")
-    //Querying tablel
+    //Querying table
     val sparkSqlTable = sparkSession.sql("Select * from employee")
     //Printing result
     //sparkSqlTable.show()
@@ -56,7 +60,7 @@ object SparkSqlExample {
     //dataset.show()
     println("New data set ")
     //Added 1 in high column
-    val alteredDataSet = dataset.map(mapperForHighIncrementation)
+    val alteredDataSet = dataset.map(_.High + 1)
     //Pulling year from the date and printing time stamp
     val selectedColumn = dataset.select(
       year($"Date" as "OnlyYear"),
