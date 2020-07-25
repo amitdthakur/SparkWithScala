@@ -13,23 +13,24 @@ object OracleSqlJoinExample {
     *
     * @return SparkSessionSparkSession
     */
-  def createSparkSession(): SparkSession = {
+  private def createSparkSession: SparkSession = {
     SparkSession
       .builder()
-      .appName("OracleSqlJoinExample")
       .master("local[*]")
+      .appName("OracleSqlJoinExample")
       .getOrCreate()
   }
 
   /**Returns the data frame.
     *
     *
-    * @param sparkSession Spark session
     * @param tableName Table name
     * @return DataFrame for that table.
     */
-  def connectToDataBaseAndGetTheDataFrame(sparkSession: SparkSession,
-                                          tableName: String): DataFrame = {
+  private def connectToDataBaseAndGetTheDataFrame(
+    tableName: String
+  ): DataFrame = {
+    val sparkSession = SparkSession.builder().getOrCreate()
     sparkSession.read
       .format("jdbc")
       .option("url", "")
@@ -44,13 +45,13 @@ object OracleSqlJoinExample {
     //Setting logger level to error to get rid of Info logs.
     Logger.getLogger("org").setLevel(Level.ERROR)
     //Creating spark session.
-    val sparkSession = createSparkSession()
+    val sparkSession = createSparkSession
     //Connecting to respective data base and student and returning data frame.
     val studentsTableDataFrame =
-      connectToDataBaseAndGetTheDataFrame(sparkSession, "students")
+      connectToDataBaseAndGetTheDataFrame("students")
     //Connecting to respective data base and phones and returning data frame.
     val phonesTableDataFrame =
-      connectToDataBaseAndGetTheDataFrame(sparkSession, "phones")
+      connectToDataBaseAndGetTheDataFrame("phones")
     //Right outer join can be denoted as right, rightouter, right_outer
     val rightOuterJoinDataFrame = studentsTableDataFrame
       .join(
