@@ -14,23 +14,25 @@ object OracleSqlResultDataFrame {
     *
     * @return SparkSessionSparkSession
     */
-  def createSparkSession(): SparkSession = {
+  private def createSparkSession: SparkSession = {
     SparkSession
       .builder()
-      .appName("OracleSqlResultDataFrame")
       .master("local[*]")
+      .appName("OracleSqlResultDataFrame")
       .getOrCreate()
   }
 
   /**Creates data frame for the respective table.
     *
     *
-    * @param sparkSession Spark session
     * @param tableName Table name
     * @return DataFrame for that table.
     */
-  def connectToDataBaseAndGetTheDataFrame(sparkSession: SparkSession,
-                                          tableName: String): DataFrame = {
+  private def connectToDataBaseAndGetTheDataFrame(
+    tableName: String
+  ): DataFrame = {
+    SparkSession.builder().getOrCreate()
+    val sparkSession = SparkSession.builder().getOrCreate()
     sparkSession.read
       .format("jdbc")
       .option("url", "")
@@ -46,10 +48,10 @@ object OracleSqlResultDataFrame {
     //Setting logger level to error to get rid of Info logs.
     Logger.getLogger("org").setLevel(Level.ERROR)
     //Creating spark session.
-    val sparkSession = createSparkSession()
+    val sparkSession = createSparkSession
     //Connecting to respective data base and student and returning data frame.
     val studentsTableDataFrame =
-      connectToDataBaseAndGetTheDataFrame(sparkSession, "students")
+      connectToDataBaseAndGetTheDataFrame("students")
     //Implicits imports for handling $
     import sparkSession.implicits._
     //Filtering based on age <28
