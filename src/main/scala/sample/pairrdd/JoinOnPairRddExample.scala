@@ -2,6 +2,7 @@ package sample.pairrdd
 
 import org.apache.log4j.{Level, Logger}
 import org.apache.spark.SparkContext
+import org.apache.spark.rdd.RDD
 import org.apache.spark.sql.SparkSession
 
 /**This class consist function to perform join operation on pair RDD.
@@ -20,7 +21,7 @@ object JoinOnPairRddExample {
   //case class.
   case class Employee(name: String, age: Int, numberOfFriends: Int)
 
-  def pairRddByCaseClass(): Unit = {
+  private def pairRddByCaseClass(): RDD[(String, (Int, Int))] = {
     val sparkContext = createSparkContext
     val rdd = sparkContext.parallelize(
       List(
@@ -32,7 +33,6 @@ object JoinOnPairRddExample {
     )
     rdd
       .map(employee => (employee.name, (1, employee.numberOfFriends)))
-      .groupByKey()
   }
 
   def main(args: Array[String]): Unit = {
