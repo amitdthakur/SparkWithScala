@@ -2,7 +2,7 @@
 
 This project contains Apache Spark(SQL) functions implementation based on Scala.
 *  Scala version: 2.12.3 
-*  Apache Spark version: 3.0.0-preview2
+*  Apache Spark version: 3.0.0
 
 Added Right outer join functionality on single column in (OracleSqlJoinExample.scala)
 Simple data base query with data frame in (OracleSqlResultDataFrame.scala)
